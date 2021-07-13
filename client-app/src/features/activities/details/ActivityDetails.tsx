@@ -1,30 +1,30 @@
 import React from 'react';
 import { Card, Button, Image } from 'semantic-ui-react';
-import { Activity } from '../../../app/models/activity';
+import LoadingComponent from '../../../app/layout/LoadingComponent';
+import { useStore } from '../../../app/stores/store';
 
-interface Props {
-    activity: Activity;
-    handleCancelSelectActivity: () => void;
-    editSelectedActivity:(id?: string) => void;
-}
 
-export default  function ActivityDetails(props: Props){
+export default  function ActivityDetails(){
+    const {activityStore} = useStore();
+    const {selectedActivity: activity, openForm, cancelSelectedActivity} = activityStore;
+
+    if (!activity) return <LoadingComponent inverted={true} content={"No"}/>;
     return (
         <Card>
-            <Image src={`/assets/categoryImages/${props.activity.category}.jpg`} wrapped ui={false} />
+            <Image src={`/assets/categoryImages/${activity.category}.jpg`} wrapped ui={false} />
             <Card.Content>
-            <Card.Header>{props.activity.title}</Card.Header>
+            <Card.Header>{activity.title}</Card.Header>
             <Card.Meta>
-                <span>{props.activity.date}</span>
+                <span>{activity.date}</span>
             </Card.Meta>
             <Card.Description>
-                {props.activity.description}
+                {activity.description}
             </Card.Description>
             </Card.Content>
             <Card.Content extra>
                 <Button.Group width='2'>
-                <Button onClick={() => props.editSelectedActivity(props.activity.id)} content='Edit' basic color='blue'/>
-                <Button onClick={() => props.handleCancelSelectActivity()} content='cancel' basic color='grey'/>
+                <Button onClick={() => openForm(activity.id)} content='Edit' basic color='blue'/>
+                <Button onClick={() => cancelSelectedActivity()} content='cancel' basic color='grey'/>
                 </Button.Group>
             </Card.Content>
         </Card>
